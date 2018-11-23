@@ -1,6 +1,10 @@
-class WrongClustersNumberError(Exception):
-    pass
+class ApplicationError(Exception):
+    msg = "Application error."
 
 
-class MatrixParsingError(Exception):
-    pass
+class WrongClustersNumberError(ApplicationError):
+    msg = ""
+
+
+class MatrixParsingError(ApplicationError):
+    msg = "Error when parsing str matrix."

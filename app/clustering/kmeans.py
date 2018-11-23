@@ -10,18 +10,23 @@ from app.exceptions import WrongClustersNumberError
 class KMeans:
 
     def __init__(self, n_clusters: int, max_iterations: int):
+        """
+        :param n_clusters: number of clusters
+        :param max_iterations: iterations number
+        """
         self.n_clusters = n_clusters
         self.max_iterations = max_iterations
 
     @staticmethod
     def _has_converged(old_centers, new_centers) -> bool:
+        """Check converge by comparing old and new centers of the clusters"""
 
         return set([tuple(a) for a in new_centers])\
-               == set([tuple(a) for a in old_centers])
+            == set([tuple(a) for a in old_centers])
 
     @staticmethod
     def _group_to_clusters(centers: list, points) -> dict:
-        """Group points to clusters
+        """Group points to clusters.
         :param centers: 
         :param points: 
         :return: dictionary, where key - cluster index, value - points in cl
@@ -38,6 +43,10 @@ class KMeans:
         return clusters_dict
 
     def _reevaluate_centers(self, clusters):
+        """Reevaluate centers of the clusters.
+        :param clusters: 
+        :return: 
+        """
         ordered_clusters = sorted(clusters.items(), key=operator.itemgetter(0))
 
         return [np.mean(value, axis=0) for _, value in ordered_clusters]
@@ -47,9 +56,8 @@ class KMeans:
 
             raise WrongClustersNumberError(
                 "There is no reason to clusterize"
-                " points by {} clusters, please, provide n_clusters > {}".format(
-                    self.n_clusters, len(points)
-                ))
+                " points by {} clusters, please,"
+                " provide n_clusters > {}".format(self.n_clusters, len(points)))
 
     def fit_predict(self, points: list) -> dict:
         self.validate_params(points)
