@@ -1,6 +1,6 @@
-from .views import clusterize
+from .views import Clusterize
 
 
 app_routes = [
-    ('POST', '/clustering/labels', clusterize),
+    ('POST', '/clustering/labels', Clusterize),
 ]

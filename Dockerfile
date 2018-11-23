@@ -1,25 +1,8 @@
-FROM ubuntu:16.04
+FROM python:3.6-alpine
 
-RUN \
- apt-get update \
- && apt-get install -y software-properties-common python-software-properties apt-transport-https \
- && add-apt-repository ppa:deadsnakes/ppa \
- && apt-get update \
- && apt-get install -y build-essential python3.6 python3.6-dev curl
-
-# Cleanup apt files so that image size is smaller.
-RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-ARG DEBIAN_FRONTEND=noninteractive
-
-
-ENV PYTHONUNBUFFERED 1
-RUN mkdir /clustering-app
+COPY . /clustering-app
 WORKDIR /clustering-app
-# Installing all requirements
-ADD requirements.txt /test-scrap
-RUN curl https://bootstrap.pypa.io/get-pip.py | python3.6
-RUN python3.6 -m pip install -r requirements.txt
-# Expose port
+
+RUN pip install -r requirements.txt
+
 EXPOSE 8000
-ADD . /clustering-app

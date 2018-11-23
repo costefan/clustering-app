@@ -1,8 +1,10 @@
-import numpy as np
-
+import operator
 import random
 from collections import defaultdict
-import operator
+
+import numpy as np
+
+from app.exceptions import WrongClustersNumberError
 
 
 class KMeans:
@@ -11,7 +13,8 @@ class KMeans:
         self.n_clusters = n_clusters
         self.max_iterations = max_iterations
 
-    def _has_converged(self, old_centers, new_centers) -> bool:
+    @staticmethod
+    def _has_converged(old_centers, new_centers) -> bool:
 
         return set([tuple(a) for a in new_centers])\
                == set([tuple(a) for a in old_centers])
@@ -39,9 +42,21 @@ class KMeans:
 
         return [np.mean(value, axis=0) for _, value in ordered_clusters]
 
+    def validate_params(self, points):
+        if len(points) <= self.n_clusters:
+
+            raise WrongClustersNumberError(
+                "There is no reason to clusterize"
+                " points by {} clusters, please, provide n_clusters > {}".format(
+                    self.n_clusters, len(points)
+                ))
+
     def fit_predict(self, points: list) -> dict:
+        self.validate_params(points)
+
         old_centers = random.sample(points, self.n_clusters)
         new_centers = random.sample(points, self.n_clusters)
+        clusters = {}
 
         iteration = 0
         while not self._has_converged(old_centers, new_centers)\
@@ -53,4 +68,5 @@ class KMeans:
             new_centers = self._reevaluate_centers(clusters)
             iteration += 1
 
+        print(clusters)
         return clusters
