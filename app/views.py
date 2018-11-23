@@ -5,7 +5,7 @@ from aiohttp import web
 from app.clustering import (
     KMeans, DEFAULT_N_CLUSTERS, DEFAULT_MAX_ITERATIONS
 )
-from app.exceptions import MatrixParsingError
+from app.exceptions import ApplicationError, MatrixParsingError
 
 
 class Clusterize(web.View):
@@ -33,10 +33,10 @@ class Clusterize(web.View):
         body = await self.request.text()
         try:
             matrix = await self.create_matrix(body)
-            n_clusters = self.request.query.get('n_clusters',
-                                                DEFAULT_N_CLUSTERS)
-            max_iterations = self.request.query.get('max_iterations',
-                                                    DEFAULT_MAX_ITERATIONS)
+            n_clusters = int(self.request.query.get(
+                'n_clusters', DEFAULT_N_CLUSTERS))
+            max_iterations = int(self.request.query.get(
+                'max_iterations', DEFAULT_MAX_ITERATIONS))
 
             model = KMeans(n_clusters, max_iterations)
 
@@ -45,6 +45,10 @@ class Clusterize(web.View):
 
             clusters_matrix_str = await self.wrap_response(clusters)
 
+        except ApplicationError as err:
+            return web.Response(
+                body=err.msg,
+                status=400)
         except Exception as err:
             return web.Response(
                 body=str(err),

@@ -57,7 +57,8 @@ class KMeans:
             raise WrongClustersNumberError(
                 "There is no reason to clusterize"
                 " points by {} clusters, please,"
-                " provide n_clusters > {}".format(self.n_clusters, len(points)))
+                " provide n_clusters > {}".format(self.n_clusters, len(points))
+            )
 
     def fit_predict(self, points: list) -> dict:
         self.validate_params(points)

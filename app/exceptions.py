@@ -3,7 +3,8 @@ class ApplicationError(Exception):
 
 
 class WrongClustersNumberError(ApplicationError):
-    msg = ""
+    def __init__(self, msg):
+        self.msg = msg
 
 
 class MatrixParsingError(ApplicationError):
